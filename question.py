@@ -1,5 +1,10 @@
 import random
+import pyewts
+
 from botok.tokenizers.wordtokenizer import WordTokenizer
+
+
+converter = pyewts.pyewts()
 
 
 class Questions:
@@ -30,9 +35,11 @@ class Questions:
         return token_tobe_rm.text
 
     def set_options(self, word_tobe_rm):
-        if len(word_tobe_rm) > 3:
-            self.options.append(word_tobe_rm[:-2])
-            self.options.append(word_tobe_rm[1:])
+        word_tobe_rm_wylie = converter.toWylie(word_tobe_rm)
+        if len(word_tobe_rm_wylie) > 3:
+            self.options.append(converter.toUnicode(word_tobe_rm_wylie[:-2]))
+            self.options.append(converter.toUnicode(word_tobe_rm_wylie[1:]))
+            self.options.append(converter.toUnicode(word_tobe_rm_wylie[:2]+word_tobe_rm_wylie[2+1:]))
         self.options.append(word_tobe_rm)
 
     def set_question(self, word_tokens):
@@ -48,7 +55,7 @@ class Questions:
         
 
 if __name__ == "__main__":
-    sentence = "འདིའི་ཕྱིར་ན་ཡང་ངོ་མཚར་བ་མ་ཡིན་ཏེ་དེའི་ཕྱིར།"
+    sentence = "མི་དེ་ལྕགས་སྒང་ལ་རྩེད་མོ་རྩེ་བསྡད་ཡོད་རེད་ད་རྐུན་མ་བརྒྱབ་པའི་རྗེས་ལ།"
     que = Questions(sentence)
     word_token = que.get_word_token()
     que.set_question(word_token)
