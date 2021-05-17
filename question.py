@@ -9,8 +9,9 @@ converter = pyewts.pyewts()
 
 class Questions:
 
-    def __init__(self, sentence = ""):
+    def __init__(self, sentence = "", type_ = ""):
         self.sentence = sentence
+        self.type_ = type_
         self.question = ""
         self.options = []
 
@@ -24,7 +25,10 @@ class Questions:
             if token.pos == "PART" or len(token.text)<3:
                 return True
             else:
-                return False
+                if self.type_ and self.type_== token.pos:
+                    return False
+                else:
+                    return True
         else:
             return True
 
@@ -56,7 +60,8 @@ class Questions:
 
 if __name__ == "__main__":
     sentence = "མི་དེ་ལྕགས་སྒང་ལ་རྩེད་མོ་རྩེ་བསྡད་ཡོད་རེད་ད་རྐུན་མ་བརྒྱབ་པའི་རྗེས་ལ།"
-    que = Questions(sentence)
+    type_ = "VERB"
+    que = Questions(sentence, type_)
     word_token = que.get_word_token()
     que.set_question(word_token)
     print(que.question)
